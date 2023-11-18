@@ -130,31 +130,28 @@
         </div>
         <div class="row">
           <div class="col-sm-8 col-sm-offset-2">
-            <form>
+            <div class="alert alert-success alert-dismissible hidden my-alert" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Terimakasih!</strong> Data anda akan saya salahgunakan:)
+            </div>
+            <form name="baihaqi-contact-form">
               <div class="form-group">
                 <label for="nama">Nama</label>
-                <input type="text" id="nama" class="form-control" placeholder="masukkan nama">
+                <input type="text" id="nama" class="form-control" placeholder="masukkan nama" name="nama">
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" class="form-control" placeholder="masukkan email">
+                <input type="email" id="email" class="form-control" placeholder="masukkan email" name="email">
               </div>
-              <div class="form-group">
-                <label for="telp">No Telepon</label>
-                <input type="tel" id="telp" class="form-control" placeholder="masukkan no telepon">
-              </div>
-              <select class="form-control">
-                <option>-- Pilih Kategori --</option>
-                <option>Web Design</option>
-                <option>Web Development</option>
-                <option>Art</option>
-                <option>Instant Noodle</option>
-              </select>
               <div class="form-group">
                 <label for="pesan">Pesan</label>
-                <textarea class="form-control" id="pesan" rows="10" placeholder="masukkan pesan"></textarea>
+                <textarea class="form-control" id="pesan" rows="10" placeholder="masukkan pesan" name="pesan"></textarea>
               </div>
-              <button type="submit" class="btn btn-primary">Kirim Pesan</button>
+              <button type="submit" class="btn btn-primary btn-kirim">Kirim Pesan</button>
+              <button class="btn btn-primary btn-loading hidden" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Bentar...
+              </button>
             </form>
           </div>
         </div>
@@ -186,5 +183,32 @@
     <script src="js/bootstrap.min.js"></script>
 
     <script src="js/script.js"></script>
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzptWSLRhzvU3JqLw5IiXrolqL7NCDkP1w65vi42xkyJctzZSSPEmIqVHi_InoCOTXHOA/exec';
+      const form = document.forms['baihaqi-contact-form'];
+      const btnKirim = document.querySelector('.btn-kirim');
+      const btnLoading = document.querySelector('.btn-loading');
+      const myAlert = document.querySelector('.my-alert');
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        // ketika tombol submit diklik
+        // tampilkan tombol loading, hilangkan tombol kirim
+        btnLoading.classList.toggle('hidden');
+        btnKirim.classList.toggle('hidden');
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+            // tampilkan tombol kirim, hilangkan tombol loading
+            btnLoading.classList.toggle('hidden');
+            btnKirim.classList.toggle('hidden');
+            // tampilkan alert
+            myAlert.classList.toggle('hidden');
+            // reset formnya
+            form.reset();
+            console.log('Success!', response);
+          })
+          .catch(error => console.error('Error!', error.message));
+      });
+    </script>
   </body>
 </html>
